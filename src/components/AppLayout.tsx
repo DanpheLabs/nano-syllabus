@@ -3,6 +3,15 @@ import { Navigation } from "./Navigation"
 import { Dashboard } from "./Dashboard"
 import { StudyArea } from "./StudyArea"
 import { LandingPage } from "./LandingPage"
+import { OnboardingForm } from "./OnboardingForm"
+import { MyCourses } from "./MyCourses"
+import { CourseTreeMap } from "./CourseTreeMap"
+import { UserProfile } from "./UserProfile"
+import { Analytics } from "./Analytics"
+import { Leaderboard } from "./Leaderboard"
+import { Settings } from "./Settings"
+import { CreateCourse } from "./CreateCourse"
+import { PaymentCheckout } from "./PaymentCheckout"
 
 export function AppLayout() {
   const [currentView, setCurrentView] = useState<string>("landing")
@@ -22,7 +31,9 @@ export function AppLayout() {
   const renderCurrentView = () => {
     switch (currentView) {
       case "landing":
-        return <LandingPage onGetStarted={handleGetStarted} />
+        return <LandingPage onGetStarted={() => setCurrentView("onboarding")} />
+      case "onboarding":
+        return <OnboardingForm onComplete={() => setCurrentView("dashboard")} />
       case "dashboard":
         return (
           <div className="flex h-screen">
@@ -34,66 +45,52 @@ export function AppLayout() {
         return (
           <div className="flex h-screen">
             <Navigation currentPage="courses" onPageChange={handlePageChange} />
-            <div className="flex-1 p-6">
-              <h1 className="text-2xl font-bold mb-4">My Courses</h1>
-              <p className="text-muted-foreground">Course listing page coming soon...</p>
-            </div>
+            <MyCourses onCourseSelect={() => setCurrentView("course-tree")} onCreateCourse={() => setCurrentView("create")} />
           </div>
         )
+      case "course-tree":
+        return <CourseTreeMap onBack={() => setCurrentView("courses")} onTopicSelect={() => setCurrentView("study")} />
       case "study":
-        return <StudyArea onBack={handleBackToCourse} />
+        return <StudyArea onBack={() => setCurrentView("course-tree")} />
       case "analytics":
         return (
           <div className="flex h-screen">
             <Navigation currentPage="analytics" onPageChange={handlePageChange} />
-            <div className="flex-1 p-6">
-              <h1 className="text-2xl font-bold mb-4">Analytics</h1>
-              <p className="text-muted-foreground">Analytics dashboard coming soon...</p>
-            </div>
+            <Analytics />
           </div>
         )
       case "profile":
         return (
           <div className="flex h-screen">
             <Navigation currentPage="profile" onPageChange={handlePageChange} />
-            <div className="flex-1 p-6">
-              <h1 className="text-2xl font-bold mb-4">Profile</h1>
-              <p className="text-muted-foreground">User profile page coming soon...</p>
-            </div>
+            <UserProfile />
           </div>
         )
       case "leaderboard":
         return (
           <div className="flex h-screen">
             <Navigation currentPage="leaderboard" onPageChange={handlePageChange} />
-            <div className="flex-1 p-6">
-              <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
-              <p className="text-muted-foreground">Leaderboard page coming soon...</p>
-            </div>
+            <Leaderboard />
           </div>
         )
       case "settings":
         return (
           <div className="flex h-screen">
             <Navigation currentPage="settings" onPageChange={handlePageChange} />
-            <div className="flex-1 p-6">
-              <h1 className="text-2xl font-bold mb-4">Settings</h1>
-              <p className="text-muted-foreground">Settings page coming soon...</p>
-            </div>
+            <Settings />
           </div>
         )
       case "create":
         return (
           <div className="flex h-screen">
             <Navigation currentPage="create" onPageChange={handlePageChange} />
-            <div className="flex-1 p-6">
-              <h1 className="text-2xl font-bold mb-4">Create Course</h1>
-              <p className="text-muted-foreground">Course creation page coming soon...</p>
-            </div>
+            <CreateCourse />
           </div>
         )
+      case "payment":
+        return <PaymentCheckout onBack={() => setCurrentView("dashboard")} onSuccess={() => setCurrentView("dashboard")} />
       default:
-        return <LandingPage onGetStarted={handleGetStarted} />
+        return <LandingPage onGetStarted={() => setCurrentView("onboarding")} />
     }
   }
 
