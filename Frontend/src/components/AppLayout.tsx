@@ -2,8 +2,8 @@ import { useState } from "react"
 import { Navigation } from "./Navigation"
 import { Dashboard } from "./Dashboard"
 import { StudyArea } from "./StudyArea"
-import { LandingPage } from "./LandingPage"
-import { OnboardingForm } from "./OnboardingForm"
+import { LandingPage } from "../pages/Landingpage/index"
+import OnboardingForm from "../Features/Onboarding/OnboardingForm"
 import { MyCourses } from "./MyCourses"
 import { CourseTreeMap } from "./CourseTreeMap"
 import { UserProfile } from "./UserProfile"
@@ -33,11 +33,14 @@ export function AppLayout() {
       case "landing":
         return <LandingPage onGetStarted={() => setCurrentView("onboarding")} />
       case "onboarding":
-        return <OnboardingForm onComplete={() => setCurrentView("dashboard")} />
+        return <OnboardingForm />
       case "dashboard":
         return (
           <div className="flex h-screen">
-            <Navigation currentPage="dashboard" onPageChange={handlePageChange} />
+            <Navigation
+              currentPage="dashboard"
+              onPageChange={handlePageChange}
+            />
             <Dashboard />
           </div>
         )
@@ -45,17 +48,28 @@ export function AppLayout() {
         return (
           <div className="flex h-screen">
             <Navigation currentPage="courses" onPageChange={handlePageChange} />
-            <MyCourses onCourseSelect={() => setCurrentView("course-tree")} onCreateCourse={() => setCurrentView("create")} />
+            <MyCourses
+              onCourseSelect={() => setCurrentView("course-tree")}
+              onCreateCourse={() => setCurrentView("create")}
+            />
           </div>
         )
       case "course-tree":
-        return <CourseTreeMap onBack={() => setCurrentView("courses")} onTopicSelect={() => setCurrentView("study")} />
+        return (
+          <CourseTreeMap
+            onBack={() => setCurrentView("courses")}
+            onTopicSelect={() => setCurrentView("study")}
+          />
+        )
       case "study":
         return <StudyArea onBack={() => setCurrentView("course-tree")} />
       case "analytics":
         return (
           <div className="flex h-screen">
-            <Navigation currentPage="analytics" onPageChange={handlePageChange} />
+            <Navigation
+              currentPage="analytics"
+              onPageChange={handlePageChange}
+            />
             <Analytics />
           </div>
         )
@@ -69,14 +83,20 @@ export function AppLayout() {
       case "leaderboard":
         return (
           <div className="flex h-screen">
-            <Navigation currentPage="leaderboard" onPageChange={handlePageChange} />
+            <Navigation
+              currentPage="leaderboard"
+              onPageChange={handlePageChange}
+            />
             <Leaderboard />
           </div>
         )
       case "settings":
         return (
           <div className="flex h-screen">
-            <Navigation currentPage="settings" onPageChange={handlePageChange} />
+            <Navigation
+              currentPage="settings"
+              onPageChange={handlePageChange}
+            />
             <Settings />
           </div>
         )
@@ -88,15 +108,16 @@ export function AppLayout() {
           </div>
         )
       case "payment":
-        return <PaymentCheckout onBack={() => setCurrentView("dashboard")} onSuccess={() => setCurrentView("dashboard")} />
+        return (
+          <PaymentCheckout
+            onBack={() => setCurrentView("dashboard")}
+            onSuccess={() => setCurrentView("dashboard")}
+          />
+        )
       default:
         return <LandingPage onGetStarted={() => setCurrentView("onboarding")} />
     }
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      {renderCurrentView()}
-    </div>
-  )
+  return <div className="min-h-screen bg-background">{renderCurrentView()}</div>
 }

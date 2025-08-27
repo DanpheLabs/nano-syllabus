@@ -1,17 +1,44 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+interface OnboardingFormProps {
+  onComplete?: () => void
+}
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { useState } from "react"
+import { Eye, EyeOff, Zap } from "lucide-react"
+import { useForm } from "react-hook-form"
+import {
+  Box,
+  Button,
+  Flex,
+  Text,
+  Input,
+  VStack,
+  HStack,
+  Container,
+  Field,
+} from "@chakra-ui/react"
+import { FcGoogle } from "react-icons/fc"
 import { Progress } from "@/components/ui/progress"
 import { CheckCircle, GraduationCap, BookOpen, Target } from "lucide-react"
+import { Sidebar } from "@/components/Sidebar"
+import AccountTypeSelector from "./FirstStep"
+import LearningLevelSelector from "./SecondStep"
+import ThirdStep from "./ThirdStep"
+import FourStep from "./FourStep"
 
 interface OnboardingFormProps {
   onComplete?: () => void
 }
 
-export function OnboardingForm({ onComplete }: OnboardingFormProps) {
+export function SecondPageOnboardingForm({ onComplete }: OnboardingFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     name: "",
@@ -19,7 +46,7 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
     level: "",
     program: "",
     specialization: "",
-    goals: []
+    goals: [],
   })
 
   const levels = [
@@ -30,7 +57,7 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
   ]
 
   const programs = {
-    "bachelor": [
+    bachelor: [
       { value: "computer-science", label: "Computer Science" },
       { value: "engineering", label: "Engineering" },
       { value: "business", label: "Business Administration" },
@@ -38,12 +65,12 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
       { value: "law", label: "Law" },
       { value: "arts", label: "Liberal Arts" },
     ],
-    "master": [
+    master: [
       { value: "computer-science", label: "Computer Science" },
       { value: "mba", label: "MBA" },
       { value: "engineering", label: "Engineering" },
       { value: "data-science", label: "Data Science" },
-    ]
+    ],
   }
 
   const specializations = {
@@ -53,18 +80,22 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
       { value: "cybersecurity", label: "Cybersecurity" },
       { value: "data-structures", label: "Data Structures & Algorithms" },
     ],
-    "engineering": [
+    engineering: [
       { value: "mechanical", label: "Mechanical Engineering" },
       { value: "electrical", label: "Electrical Engineering" },
       { value: "civil", label: "Civil Engineering" },
       { value: "chemical", label: "Chemical Engineering" },
-    ]
+    ],
   }
 
   const goals = [
     { id: "memorization", label: "Improve memorization skills", icon: "🧠" },
     { id: "exam-prep", label: "Exam preparation", icon: "📝" },
-    { id: "concept-understanding", label: "Better concept understanding", icon: "💡" },
+    {
+      id: "concept-understanding",
+      label: "Better concept understanding",
+      icon: "💡",
+    },
     { id: "time-management", label: "Better time management", icon: "⏰" },
   ]
 
@@ -83,11 +114,11 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
   }
 
   const toggleGoal = (goalId: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      goals: prev.goals.includes(goalId) 
-        ? prev.goals.filter(g => g !== goalId)
-        : [...prev.goals, goalId]
+      goals: prev.goals.includes(goalId)
+        ? prev.goals.filter((g) => g !== goalId)
+        : [...prev.goals, goalId],
     }))
   }
 
@@ -100,43 +131,40 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
           <div className="w-16 h-16 gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl">Welcome to Edu Cat!</CardTitle>
-          <p className="text-muted-foreground">Let's personalize your learning journey</p>
-          <div className="mt-4">
-            <Progress value={progress} className="h-2" />
-            <p className="text-sm text-muted-foreground mt-2">Step {currentStep} of 4</p>
-          </div>
+          <CardTitle className="text-2xl">Welcome to Nano Syllabus !</CardTitle>
+          <p className="text-muted-foreground">
+            Let's personalize your learning journey
+          </p>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           {currentStep === 1 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Target className="w-5 h-5" />
-                Basic Information
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="Enter your email"
-                  />
-                </div>
-              </div>
-            </div>
+            // <div className="space-y-4">
+            //   <div className="space-y-4">
+            //     <VStack>
+            //       <Text>Who are you?</Text>
+            //       <Text>Tell us what type of account you'd be opening.</Text>
+            //       <HStack>
+            //         <VStack>
+            //           <Text>Student</Text>
+            //         </VStack>
+            //         <VStack>
+            //           <Text>Teacher</Text>
+            //         </VStack>
+
+            //         <VStack>
+            //           <Text>Admin</Text>
+            //         </VStack>
+            //       </HStack>
+            //     </VStack>
+            //     <div className="mt-4">
+            //       <Progress value={progress} className="h-2" />
+            //       <Text color={"#4540ee"}>Step {currentStep}</Text>
+            //     </div>
+            //   </div>
+            // </div>
+            <FourStep progress={progress} currentStep={currentStep} />
+            //   <AccountTypeSelector progress={ progress} currentStep={currentStep} />
           )}
 
           {currentStep === 2 && (
@@ -149,7 +177,14 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
                 <Label>What's your current level of study?</Label>
                 <Select
                   value={formData.level}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, level: value, program: "", specialization: "" }))}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      level: value,
+                      program: "",
+                      specialization: "",
+                    }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select your academic level" />
@@ -176,7 +211,13 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
                 <Label>What program are you studying?</Label>
                 <Select
                   value={formData.program}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, program: value, specialization: "" }))}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      program: value,
+                      specialization: "",
+                    }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select your program" />
@@ -190,13 +231,18 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               {formData.program && specializations[formData.program] && (
                 <div>
                   <Label>Specialization (Optional)</Label>
                   <Select
                     value={formData.specialization}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, specialization: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        specialization: value,
+                      }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select specialization" />
@@ -220,15 +266,17 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
                 <Target className="w-5 h-5" />
                 Learning Goals
               </h3>
-              <p className="text-muted-foreground">What do you want to improve? (Select all that apply)</p>
+              <p className="text-muted-foreground">
+                What do you want to improve? (Select all that apply)
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {goals.map((goal) => (
                   <div
                     key={goal.id}
                     className={`p-4 rounded-lg border cursor-pointer transition-all ${
                       formData.goals.includes(goal.id)
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-primary/50'
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
                     }`}
                     onClick={() => toggleGoal(goal.id)}
                   >
@@ -263,7 +311,7 @@ export function OnboardingForm({ onComplete }: OnboardingFormProps) {
                 (currentStep === 4 && formData.goals.length === 0)
               }
             >
-              {currentStep === 4 ? 'Complete Setup' : 'Next'}
+              {currentStep === 4 ? "Complete Setup" : "Next"}
             </Button>
           </div>
         </CardContent>
