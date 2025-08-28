@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email,isPremium, password,language, isOnboarded, current_level_of_study, what_program_studying, learning_goals, fullName } = req.body;
+    const { email,isPremium, password,language, isOnboarded, current_level_of_study, what_program_studying, learning_goals, full_name } = req.body;
     
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new UserModel({
@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
       current_level_of_study,
       what_program_studying,
       learning_goals,
-      full_name: fullName,
+      full_name: full_name,
       isPremium,
       language
     });
@@ -39,7 +39,8 @@ export const register = async (req: Request, res: Response) => {
       .status(201)
       .json({ 
         message: "User registered successfully", 
-        user: userWithoutPassword 
+        user: userWithoutPassword,
+        token
       });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
@@ -63,7 +64,7 @@ export const login = async (req: Request, res: Response) => {
         maxAge: 24 * 60 * 60 * 1000 // 1 day
       })
       .status(200)
-      .json({ message: "Login successful", user:userWithoutPassword });
+      .json({ message: "Login successful", user:userWithoutPassword, token });
   } catch (error) {
     res.status(400).json({ error: (error as Error).message });
   }

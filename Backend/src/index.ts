@@ -1,5 +1,6 @@
 import type { Request, Response } from "express"
 import userRoutes from "./routes/User.routes"
+import examRoutes from "./routes/Exam.route"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import dotenv from "dotenv"
@@ -18,7 +19,8 @@ app.use(cors({
     "http://localhost:5173", 
     "http://localhost:5174",
     "http://localhost:8080",
-    "http://localhost:8081"
+    "http://localhost:8081",
+    "*"
   ], // Add your actual frontend URL
   credentials: true,
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
@@ -44,7 +46,8 @@ app.get("/test", (req: Request, res: Response) => {
 })
 
 // Routes
-app.use("/", userRoutes) // Consider prefixing with /api
+app.use("/api", userRoutes) // Consider prefixing with /api
+app.use("/api", examRoutes) // Exam and Question routes
 
 mongodbconnect()
 
