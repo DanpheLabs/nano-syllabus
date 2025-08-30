@@ -1,7 +1,7 @@
 import axiosInstance from "@/services/axios"
 import { safeApiCall } from "@/lib/helper/apiHelper"
 
-const url = "/onboarding"
+const url = "api/onboarding"
 
 export enum CurrentLevelOfStudy {
   HighSchool = "High School",
@@ -20,8 +20,19 @@ export interface OnboardingData {
   isPremium: boolean
 }
 
+
+export interface loginData {
+  email: string
+  password: string
+}
+
 const onboarding = (data: OnboardingData) => {
   return safeApiCall(() => axiosInstance.post(url, data).then(res => res.data))
 }
 
-export { onboarding }
+
+const login = ({email , password}:loginData) => {
+  return safeApiCall(() => axiosInstance.post("api/login", {email, password}).then(res => res.data))
+}
+
+export { onboarding, login }

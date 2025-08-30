@@ -7,7 +7,6 @@ import OnboardingForm from "../Features/Onboarding/OnboardingForm"
 import { MyCourses } from "./MyCourses"
 import { CourseTreeMap } from "./CourseTreeMap"
 import { UserProfile } from "./UserProfile"
-import { Analytics } from "./Analytics"
 import { Leaderboard } from "./Leaderboard"
 import { Settings } from "./Settings"
 import { CreateCourse } from "./CreateCourse"
@@ -63,16 +62,7 @@ export function AppLayout() {
         )
       case "study":
         return <StudyArea onBack={() => setCurrentView("course-tree")} />
-      case "analytics":
-        return (
-          <div className="flex h-screen">
-            <Navigation
-              currentPage="analytics"
-              onPageChange={handlePageChange}
-            />
-            <Analytics />
-          </div>
-        )
+
       case "profile":
         return (
           <div className="flex h-screen">

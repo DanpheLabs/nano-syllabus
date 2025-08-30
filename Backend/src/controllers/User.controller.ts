@@ -31,7 +31,7 @@ export const register = async (req: Request, res: Response) => {
     
     res
       .cookie("token", token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000
@@ -58,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: "1d" });
     res
       .cookie("token", token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000 // 1 day

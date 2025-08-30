@@ -1,230 +1,425 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { 
-  TrendingUp, 
-  BookOpen, 
-  Clock, 
-  Target,
-  Play,
-  Star,
+import React from "react"
+import {
+  Box,
+  Card,
+  Button,
+  Progress,
+  Text,
+  Heading,
+  VStack,
+  HStack,
+  Grid,
+  Icon,
+  Flex,
+  Badge,
+  Avatar,
+} from "@chakra-ui/react"
+import {
+  TrendingUp,
+  BookOpen,
+  Clock,
   Trophy,
-  Zap,
-  ChevronRight,
+  Calendar,
   Brain,
-  Calendar
+  Zap,
+  Target,
+  ArrowRight,
+  Flame,
+  Star,
+  Award,
+  Activity,
+  Play,
+  ChevronRight,
 } from "lucide-react"
 
 export function Dashboard() {
   const recentActivity = [
-    { subject: "Data Structures", topic: "Binary Trees", progress: 85, time: "2 hours ago" },
-    { subject: "Algorithms", topic: "Dynamic Programming", progress: 60, time: "1 day ago" },
-    { subject: "Database Systems", topic: "Normalization", progress: 95, time: "2 days ago" },
+    {
+      subject: "Data Structures",
+      topic: "Binary Trees & Traversal",
+      progress: 85,
+      time: "2h ago",
+      color: "purple.500",
+      bg: "purple.50",
+    },
+    {
+      subject: "Machine Learning",
+      topic: "Neural Networks",
+      progress: 60,
+      time: "1d ago",
+      color: "blue.500",
+      bg: "blue.50",
+    },
+    {
+      subject: "System Design",
+      topic: "Microservices Architecture",
+      progress: 95,
+      time: "2d ago",
+      color: "green.500",
+      bg: "green.50",
+    },
   ]
 
-  const featuredContent = [
-    { 
-      title: "Master Memory Techniques", 
-      description: "Learn advanced memorization strategies",
-      category: "Study Skills",
-      duration: "45 min",
-      difficulty: "Intermediate"
+  const stats = [
+    {
+      label: "Learning Streak",
+      value: "28",
+      unit: "days",
+      icon: Flame,
+      color: "orange.500",
+      bg: "orange.50",
+      trend: "+5 from last week",
     },
-    { 
-      title: "Algorithm Visualization", 
-      description: "Interactive algorithm learning",
-      category: "Computer Science",
-      duration: "30 min",
-      difficulty: "Advanced"
+    {
+      label: "Courses Active",
+      value: "8",
+      unit: "courses",
+      icon: BookOpen,
+      color: "blue.500",
+      bg: "blue.50",
+      trend: "2 completed this month",
+    },
+    {
+      label: "Study Time",
+      value: "142",
+      unit: "hours",
+      icon: Clock,
+      color: "green.500",
+      bg: "green.50",
+      trend: "32h this week",
+    },
+    {
+      label: "Global Rank",
+      value: "#23",
+      unit: "top 5%",
+      icon: Trophy,
+      color: "purple.500",
+      bg: "purple.50",
+      trend: "↑12 positions",
+    },
+  ]
+
+  const quickActions = [
+    {
+      title: "AI Study Assistant",
+      description: "Get personalized learning recommendations",
+      icon: Brain,
+      color: "blue.500",
+      bg: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      buttonText: "Start Session",
+      isNew: true,
+    },
+    {
+      title: "Practice Arena",
+      description: "Solve coding challenges and compete",
+      icon: Target,
+      color: "green.500",
+      bg: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+      buttonText: "Enter Arena",
+    },
+    {
+      title: "Memory Palace",
+      description: "Master complex topics with visual techniques",
+      icon: Zap,
+      color: "orange.500",
+      bg: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+      buttonText: "Explore",
     },
   ]
 
   return (
-    <div className="flex-1 p-6 space-y-6 bg-background">
+    <Box p={6} maxW="7xl" mx="auto" bg="gray.50" minH="100vh">
       {/* Welcome Header */}
-      <div className="gradient-primary rounded-xl p-6 text-white shadow-medium">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold mb-2">Welcome back, Prashant! 🎓</h1>
-            <p className="opacity-90">Ready to continue your learning journey?</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm opacity-90">Current Streak</p>
-            <p className="text-3xl font-bold">7 days 🔥</p>
-          </div>
-        </div>
-      </div>
+      <Card.Root mb={8} overflow="hidden" shadow="xl" border="none">
+        <Box
+          bg="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+          color="white"
+          position="relative"
+        >
+          <Box
+            position="absolute"
+            top="0"
+            right="0"
+            w="200px"
+            h="200px"
+            opacity="0.1"
+          >
+            <Icon as={Star} w="full" h="full" />
+          </Box>
+          <Card.Body p={8} position="relative" zIndex={1}>
+            <Flex justify="space-between" align="center">
+              <VStack align="start" gap={3}>
+                <HStack gap={3}>
+                  <Avatar.Root size="lg">
+                    <Avatar.Image src="https://api.dicebear.com/7.x/avataaars/svg?seed=Prashant" />
+                    <Avatar.Fallback>P</Avatar.Fallback>
+                  </Avatar.Root>
+                  <VStack align="start" gap={1}>
+                    <Heading size="xl" fontWeight="bold">
+                      Welcome back, Prashant! 👋
+                    </Heading>
+                    <Text opacity={0.9} fontSize="lg">
+                      Ready to level up your skills today?
+                    </Text>
+                  </VStack>
+                </HStack>
+              </VStack>
+              <VStack align="end" gap={2}>
+                <HStack gap={2}>
+                  <Icon as={Flame} w={6} h={6} color="orange.300" />
+                  <VStack gap={0} align="end">
+                    <Text fontSize="3xl" fontWeight="black" lineHeight="1">
+                      28
+                    </Text>
+                    <Text fontSize="sm" opacity={0.9} lineHeight="1">
+                      day streak
+                    </Text>
+                  </VStack>
+                </HStack>
+                <Badge
+                  colorScheme="orange"
+                  variant="solid"
+                  rounded="full"
+                  px={3}
+                  py={1}
+                >
+                  🔥 On Fire!
+                </Badge>
+              </VStack>
+            </Flex>
+          </Card.Body>
+        </Box>
+      </Card.Root>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="shadow-soft">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total Progress</p>
-                <p className="text-2xl font-bold">78%</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <Grid
+        templateColumns={{
+          base: "1fr",
+          md: "repeat(2, 1fr)",
+          lg: "repeat(4, 1fr)",
+        }}
+        gap={6}
+        mb={8}
+      >
+        {stats.map((stat, index) => (
+          <Card.Root
+            key={index}
+            bg="white"
+            shadow="lg"
+            border="none"
+            _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
+            transition="all 0.3s"
+            cursor="pointer"
+          >
+            <Card.Body p={6} gap={4}>
+              <HStack justify="space-between">
+                <Box
+                  w={12}
+                  h={12}
+                  bg={stat.bg}
+                  rounded="xl"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Icon as={stat.icon} w={6} h={6} color={stat.color} />
+                </Box>
+                <Icon as={TrendingUp} w={4} h={4} color="green.500" />
+              </HStack>
+              <VStack align="start" gap={1}>
+                <HStack align="baseline" gap={1}>
+                  <Text fontSize="3xl" fontWeight="black" color="gray.900">
+                    {stat.value}
+                  </Text>
+                  <Text fontSize="sm" color="gray.500" fontWeight="medium">
+                    {stat.unit}
+                  </Text>
+                </HStack>
+                <Text fontSize="sm" color="gray.600" fontWeight="medium">
+                  {stat.label}
+                </Text>
+                <Text fontSize="xs" color="green.600" fontWeight="semibold">
+                  {stat.trend}
+                </Text>
+              </VStack>
+            </Card.Body>
+          </Card.Root>
+        ))}
+      </Grid>
 
-        <Card className="shadow-soft">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-success" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Courses</p>
-                <p className="text-2xl font-bold">12</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-soft">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
-                <Clock className="w-5 h-5 text-warning" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Study Time</p>
-                <p className="text-2xl font-bold">24h</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-soft">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-level/10 rounded-lg flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-level" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Rank</p>
-                <p className="text-2xl font-bold">#23</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Main Content Grid */}
+      <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={8} mb={8}>
         {/* Recent Activity */}
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                <div className="flex-1">
-                  <h4 className="font-medium">{activity.subject}</h4>
-                  <p className="text-sm text-muted-foreground">{activity.topic}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Progress value={activity.progress} className="flex-1 h-2" />
-                    <span className="text-xs text-muted-foreground">{activity.progress}%</span>
-                  </div>
-                </div>
-                <div className="text-right ml-4">
-                  <p className="text-xs text-muted-foreground">{activity.time}</p>
-                  <Button size="sm" variant="ghost" className="mt-1">
-                    Continue
-                  </Button>
-                </div>
-              </div>
-            ))}
-            <Button variant="outline" className="w-full">
-              View All Activity
-            </Button>
-          </CardContent>
-        </Card>
+        <Card.Root bg="white" shadow="lg" border="none">
+          <Card.Header p={6} pb={4}></Card.Header>
+          <Card.Body px={6} pb={6} gap={4}>
+            {/* Quick Actions */}
+            <VStack gap={6}>
+              {quickActions.map((action, index) => (
+                <Card.Root
+                  key={index}
+                  overflow="hidden"
+                  shadow="xl"
+                  border="none"
+                  _hover={{ transform: "translateY(-4px)", shadow: "2xl" }}
+                  transition="all 0.3s"
+                  cursor="pointer"
+                  position="relative"
+                  w="full"
+                >
+                  <Box bg={action.bg} color="white" position="relative">
+                    {action.isNew && (
+                      <Badge
+                        position="absolute"
+                        top={4}
+                        right={4}
+                        colorScheme="red"
+                        variant="solid"
+                        rounded="full"
+                        fontSize="xs"
+                        zIndex={2}
+                      >
+                        NEW
+                      </Badge>
+                    )}
+                    <Box
+                      position="absolute"
+                      top="0"
+                      right="0"
+                      w="80px"
+                      h="80px"
+                      opacity="0.2"
+                    >
+                      <Icon as={action.icon} w="full" h="full" />
+                    </Box>
+                    <Card.Body p={6} gap={3} position="relative" zIndex={1}>
+                      <Icon as={action.icon} w={8} h={8} color="white" />
+                      <VStack align="start" gap={2}>
+                        <Card.Title
+                          fontSize="md"
+                          fontWeight="bold"
+                          color="white"
+                        >
+                          {action.title}
+                        </Card.Title>
+                        <Card.Description
+                          color="white"
+                          opacity="0.9"
+                          fontSize="sm"
+                        >
+                          {action.description}
+                        </Card.Description>
+                      </VStack>
+                      <Button
+                        variant="solid"
+                        bg="white"
+                        color="gray.900"
+                        size="sm"
+                        w="full"
+                        fontWeight="bold"
+                        _hover={{ bg: "gray.100" }}
+                        mt={2}
+                      >
+                        <Play size={16} />
+                        {action.buttonText}
+                      </Button>
+                    </Card.Body>
+                  </Box>
+                </Card.Root>
+              ))}
+            </VStack>
+          </Card.Body>
+        </Card.Root>
 
-        {/* Featured Content */}
-        <Card className="shadow-soft">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="w-5 h-5" />
-              Featured Content
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {featuredContent.map((content, index) => (
-              <div key={index} className="p-4 rounded-lg border border-border hover:shadow-soft transition-all">
-                <div className="flex items-start justify-between mb-2">
-                  <Badge variant="secondary">{content.category}</Badge>
-                  <Badge 
-                    variant={content.difficulty === 'Advanced' ? 'destructive' : 'default'}
-                    className="text-xs"
-                  >
-                    {content.difficulty}
-                  </Badge>
-                </div>
-                <h4 className="font-medium mb-1">{content.title}</h4>
-                <p className="text-sm text-muted-foreground mb-3">{content.description}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    {content.duration}
-                  </div>
-                  <Button size="sm" className="gradient-primary text-white">
-                    <Play className="w-3 h-3 mr-1" />
-                    Start
-                  </Button>
-                </div>
-              </div>
-            ))}
-            <Button variant="outline" className="w-full">
-              Explore More Content
+        {/* Quick Actions */}
+        <VStack gap={4} align="stretch" backgroundColor={"white"} padding={4}>
+          <HStack justify="space-between">
+            <HStack gap={3}>
+              <Box
+                w={10}
+                h={10}
+                bg="blue.50"
+                rounded="lg"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Icon as={Activity} w={5} h={5} color="blue.500" />
+              </Box>
+              <Text fontSize="xl" fontWeight="bold">
+                Recent Progress
+              </Text>
+            </HStack>
+            <Button size="sm" variant="ghost">
+              <ArrowRight size={16} />
+              View All
             </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer gradient-secondary">
-          <CardContent className="p-6 text-center">
-            <Brain className="w-8 h-8 mx-auto mb-3 text-primary" />
-            <h3 className="font-semibold mb-2">Smart Study Session</h3>
-            <p className="text-sm text-muted-foreground mb-4">AI-powered adaptive learning</p>
-            <Button size="sm" className="w-full">
-              Start Session
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer">
-          <CardContent className="p-6 text-center">
-            <Target className="w-8 h-8 mx-auto mb-3 text-success" />
-            <h3 className="font-semibold mb-2">Take Practice Test</h3>
-            <p className="text-sm text-muted-foreground mb-4">Test your knowledge</p>
-            <Button size="sm" variant="outline" className="w-full">
-              Start Test
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer">
-          <CardContent className="p-6 text-center">
-            <Zap className="w-8 h-8 mx-auto mb-3 text-warning" />
-            <h3 className="font-semibold mb-2">Memory Challenge</h3>
-            <p className="text-sm text-muted-foreground mb-4">Boost your memorization skills</p>
-            <Button size="sm" variant="outline" className="w-full">
-              Challenge
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          </HStack>
+          {recentActivity.map((activity, index) => (
+            <Box
+              key={index}
+              p={5}
+              rounded="xl"
+              bg={activity.bg}
+              border="1px"
+              borderColor="gray.100"
+              _hover={{ shadow: "md" }}
+              transition="all 0.2s"
+            >
+              <HStack justify="space-between" align="center" mb={3}>
+                <VStack align="start" gap={1} flex="1">
+                  <HStack gap={2}>
+                    <Badge
+                      colorScheme={activity.color.split(".")[0]}
+                      variant="solid"
+                      rounded="full"
+                      px={2}
+                      py={1}
+                      fontSize="xs"
+                    >
+                      {activity.subject}
+                    </Badge>
+                    <Text fontSize="xs" color="gray.500">
+                      {activity.time}
+                    </Text>
+                  </HStack>
+                  <Text fontWeight="bold" fontSize="md" color="gray.900">
+                    {activity.topic}
+                  </Text>
+                </VStack>
+                <Button
+                  size="sm"
+                  colorScheme={activity.color.split(".")[0]}
+                  variant="solid"
+                  rounded="full"
+                >
+                  Continue
+                </Button>
+              </HStack>
+              <HStack gap={3}>
+                <Progress.Root
+                  value={activity.progress}
+                  flex="1"
+                  size="md"
+                  colorScheme={activity.color.split(".")[0]}
+                >
+                  <Progress.Track bg="white" rounded="full">
+                    <Progress.Range rounded="full" />
+                  </Progress.Track>
+                </Progress.Root>
+                <Text
+                  fontSize="sm"
+                  fontWeight="bold"
+                  color={activity.color}
+                  minW="45px"
+                >
+                  {activity.progress}%
+                </Text>
+              </HStack>
+            </Box>
+          ))}
+        </VStack>
+      </Grid>
+    </Box>
   )
 }

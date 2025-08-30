@@ -17,6 +17,7 @@ import {
   Grid,
   List
 } from "lucide-react"
+import Cookies from "js-cookie"
 
 interface MyCoursesProps {
   onCourseSelect?: (courseId: string) => void
@@ -24,9 +25,11 @@ interface MyCoursesProps {
 }
 
 export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
 
+  const data = Cookies.get("token")
+  console.log("data", data)
   const courses = [
     {
       id: "1",
@@ -40,10 +43,10 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
       rating: 4.8,
       studyTime: "45h",
       category: "Programming",
-      status: "In Progress"
+      status: "In Progress",
     },
     {
-      id: "2", 
+      id: "2",
       title: "Database Management Systems",
       subject: "Computer Science",
       progress: 45,
@@ -54,11 +57,11 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
       rating: 4.6,
       studyTime: "32h",
       category: "Database",
-      status: "In Progress"
+      status: "In Progress",
     },
     {
       id: "3",
-      title: "Machine Learning Fundamentals", 
+      title: "Machine Learning Fundamentals",
       subject: "Computer Science",
       progress: 100,
       totalTopics: 20,
@@ -68,12 +71,12 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
       rating: 4.9,
       studyTime: "68h",
       category: "AI/ML",
-      status: "Completed"
+      status: "Completed",
     },
     {
       id: "4",
       title: "Software Engineering Principles",
-      subject: "Computer Science", 
+      subject: "Computer Science",
       progress: 20,
       totalTopics: 18,
       completedTopics: 4,
@@ -82,23 +85,28 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
       rating: 4.5,
       studyTime: "12h",
       category: "Engineering",
-      status: "In Progress"
-    }
+      status: "In Progress",
+    },
   ]
 
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.category.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const inProgressCourses = filteredCourses.filter(c => c.status === "In Progress")
-  const completedCourses = filteredCourses.filter(c => c.status === "Completed")
+  const inProgressCourses = filteredCourses.filter(
+    (c) => c.status === "In Progress"
+  )
+  const completedCourses = filteredCourses.filter(
+    (c) => c.status === "Completed"
+  )
 
-  const CourseCard = ({ course }: { course: typeof courses[0] }) => (
+  const CourseCard = ({ course }: { course: (typeof courses)[0] }) => (
     <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer group">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <Badge 
+          <Badge
             variant={course.status === "Completed" ? "default" : "secondary"}
             className={course.status === "Completed" ? "bg-success" : ""}
           >
@@ -123,7 +131,7 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
               {course.completedTopics} of {course.totalTopics} topics completed
             </p>
           </div>
-          
+
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
@@ -137,9 +145,9 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
               {course.difficulty}
             </Badge>
           </div>
-          
+
           <div className="flex gap-2">
-            <Button 
+            <Button
               className="flex-1 gradient-primary text-white group-hover:shadow-medium"
               onClick={() => onCourseSelect?.(course.id)}
             >
@@ -150,7 +158,7 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
               <BookOpen className="w-4 h-4" />
             </Button>
           </div>
-          
+
           <p className="text-xs text-muted-foreground">
             Last accessed: {course.lastAccessed}
           </p>
@@ -159,38 +167,44 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
     </Card>
   )
 
-  const CourseListItem = ({ course }: { course: typeof courses[0] }) => (
+  const CourseListItem = ({ course }: { course: (typeof courses)[0] }) => (
     <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer">
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-6 h-6 text-white" />
           </div>
-          
+
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-1">
               <h3 className="font-semibold truncate">{course.title}</h3>
-              <Badge 
-                variant={course.status === "Completed" ? "default" : "secondary"}
+              <Badge
+                variant={
+                  course.status === "Completed" ? "default" : "secondary"
+                }
                 className={course.status === "Completed" ? "bg-success" : ""}
               >
                 {course.category}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground mb-2">{course.subject}</p>
+            <p className="text-sm text-muted-foreground mb-2">
+              {course.subject}
+            </p>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span>{course.completedTopics}/{course.totalTopics} topics</span>
+              <span>
+                {course.completedTopics}/{course.totalTopics} topics
+              </span>
               <span>{course.studyTime}</span>
               <span>★ {course.rating}</span>
             </div>
           </div>
-          
+
           <div className="flex flex-col items-end gap-2 flex-shrink-0">
             <div className="text-right">
               <p className="text-sm font-medium">{course.progress}%</p>
               <Progress value={course.progress} className="w-20 h-1" />
             </div>
-            <Button 
+            <Button
               size="sm"
               className="gradient-primary text-white"
               onClick={() => onCourseSelect?.(course.id)}
@@ -211,7 +225,10 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
           <h1 className="text-3xl font-bold">My Courses</h1>
           <p className="text-muted-foreground">Manage your learning journey</p>
         </div>
-        <Button onClick={onCreateCourse} className="gradient-primary text-white">
+        <Button
+          onClick={onCreateCourse}
+          className="gradient-primary text-white"
+        >
           Create New Course
         </Button>
       </div>
@@ -233,16 +250,16 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
         </Button>
         <div className="flex border border-border rounded-lg p-1">
           <Button
-            variant={viewMode === 'grid' ? 'default' : 'ghost'}
+            variant={viewMode === "grid" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setViewMode('grid')}
+            onClick={() => setViewMode("grid")}
           >
             <Grid className="w-4 h-4" />
           </Button>
           <Button
-            variant={viewMode === 'list' ? 'default' : 'ghost'}
+            variant={viewMode === "list" ? "default" : "ghost"}
             size="sm"
-            onClick={() => setViewMode('list')}
+            onClick={() => setViewMode("list")}
           >
             <List className="w-4 h-4" />
           </Button>
@@ -264,7 +281,7 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
         </TabsList>
 
         <TabsContent value="in-progress" className="mt-6">
-          {viewMode === 'grid' ? (
+          {viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {inProgressCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
@@ -280,7 +297,7 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
         </TabsContent>
 
         <TabsContent value="completed" className="mt-6">
-          {viewMode === 'grid' ? (
+          {viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {completedCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
@@ -296,7 +313,7 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
         </TabsContent>
 
         <TabsContent value="all" className="mt-6">
-          {viewMode === 'grid' ? (
+          {viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
@@ -317,9 +334,14 @@ export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
           <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-medium mb-2">No courses found</h3>
           <p className="text-muted-foreground mb-4">
-            {searchQuery ? 'Try adjusting your search terms' : 'Start your learning journey by creating your first course'}
+            {searchQuery
+              ? "Try adjusting your search terms"
+              : "Start your learning journey by creating your first course"}
           </p>
-          <Button onClick={onCreateCourse} className="gradient-primary text-white">
+          <Button
+            onClick={onCreateCourse}
+            className="gradient-primary text-white"
+          >
             Create Your First Course
           </Button>
         </div>

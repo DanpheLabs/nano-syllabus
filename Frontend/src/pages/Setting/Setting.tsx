@@ -79,18 +79,18 @@ const details = [
     icon: <CgProfile size={24} />,
     title: "My Profile",
     description: "Manage your profile and preferences",
-    link: "/settings/profile"
+    link: "/profile",
   },
   {
     icon: <MdOutlineSecurity size={24} />,
     title: "Login & Security",
     description: "Update your password and secure your account",
-    link: "/settings/security"
+    link: "/settings/security",
   },
   {
     icon: <CiMoneyCheck1 size={24} />,
     title: "Subscription Management",
     description: "Manage your subscription, payments, and billing",
-    link: "/subscription"
+    link: "/subscription",
   },
 ]

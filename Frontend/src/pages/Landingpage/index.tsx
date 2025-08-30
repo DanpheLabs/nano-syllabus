@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react"
 import DashboardPreview from "@/components/DashboardPreview"
+import Footer from "@/components/Landingpage/Footer"
 
 interface LandingPageProps {
   onGetStarted?: () => void
@@ -145,10 +146,9 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
             </div>
           </div>
         </div>
-          </section>
-          
+      </section>
 
-          <DashboardPreview/>
+      <DashboardPreview />
 
       {/* Features Section */}
       <section className="py-20 px-6 bg-muted/30">
@@ -298,22 +298,8 @@ export function LandingPage({ onGetStarted }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 gradient-primary rounded flex items-center justify-center">
-                <Zap className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold">Nano Syllabus</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Nano Syllabus. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
+

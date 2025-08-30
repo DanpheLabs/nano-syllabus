@@ -1,7 +1,10 @@
 import { Flex, Text, HStack, Box } from "@chakra-ui/react"
 import {Zap} from "lucide-react"
+import { useLocation } from "react-router-dom"
 
 const OnboardingHeader = () => {
+  const location = useLocation()
+  const currentPath = location.pathname
   return (
     <Flex justify="space-between" align="center" p={8}>
       <Text color="gray.500">
@@ -11,9 +14,16 @@ const OnboardingHeader = () => {
           color="#4540ee"
           fontWeight="medium"
           cursor="pointer"
+          onClick={() => {
+            {
+              currentPath === "/login"
+                ? (window.location.href = "/signup")
+                : (window.location.href = "/login")
+            }
+          }}
           _hover={{ textDecoration: "underline" }}
         >
-          Sign in
+          {currentPath === "/login" ? "Sign up" : "Sign in"}
         </Text>
       </Text>
       <HStack gap={2}>

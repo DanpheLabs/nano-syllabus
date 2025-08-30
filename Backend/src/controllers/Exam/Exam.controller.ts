@@ -68,7 +68,8 @@ const startExam = async (req: Request, res: Response) => {
                 case 'true_false':
                     questionData.options = question.options.map((option: any, optionIndex: number) => ({
                         index: optionIndex,
-                        text: option.text
+                        text: option.text,
+                        isCorrect: option.isCorrect
                     }));
                     break;
 

@@ -25,6 +25,7 @@ import axiosInstance from "@/services/axios"
 import { useOnboarding } from "./hooks/useOnboarding"
 import type { OnboardingData } from "./api"
 import { CurrentLevelOfStudy } from "./api"
+import { useAuthContext } from "@/hooks/useAuthContext"
 
 interface FormValues {
   fullName: string
@@ -78,6 +79,8 @@ export default function OnboardingForm() {
     formState: { errors },
   } = useForm<FormValues>()
 
+  const { setIsAuthenticated } = useAuthContext()
+
   const navigate = useNavigate()
   const { submitOnboarding, isLoading, isError, error } = useOnboarding()
 
@@ -124,30 +127,35 @@ export default function OnboardingForm() {
     console.log("Step completed with data:", stepData)
     const updatedFormData = { ...formData, ...stepData }
     setFormData(updatedFormData)
-    
+
     if (currentStep < 5) {
       setCurrentStep(currentStep + 1)
     } else {
       // Submit onboarding data when all steps are complete
       console.log("Onboarding complete! Final data:", updatedFormData)
-      
+
       // Transform the data to match the API interface
       const onboardingData: OnboardingData = {
         email: updatedFormData.email,
         password: updatedFormData.password,
         fullName: updatedFormData.fullName,
         isOnboarded: true,
-        current_level_of_study: updatedFormData.learningLevel === "high-school" 
-          ? CurrentLevelOfStudy.HighSchool 
-          : CurrentLevelOfStudy.Academia,
+        current_level_of_study:
+          updatedFormData.learningLevel === "high-school"
+            ? CurrentLevelOfStudy.HighSchool
+            : CurrentLevelOfStudy.Academia,
         what_program_studying: updatedFormData.currentLevelOfStudy || "",
-        learning_goals: Array.isArray(updatedFormData.learningGoals) ? updatedFormData.learningGoals : [],
+        learning_goals: Array.isArray(updatedFormData.learningGoals)
+          ? updatedFormData.learningGoals
+          : [],
         language: updatedFormData.preferredLanguage || "English",
-        isPremium: false
+        isPremium: false,
       }
-      
+
       // Submit using TanStack Query hook
       submitOnboarding(onboardingData)
+      setIsAuthenticated(true)
+      navigate("/dashboard")
     }
   }
 
