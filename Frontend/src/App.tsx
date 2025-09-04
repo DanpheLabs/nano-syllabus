@@ -25,12 +25,20 @@ import { ProtectedRoutesWithAuth } from "./routes/ProtectedRoutes"
 import Exam from "./pages/Exam/Exam"
 import ExamQuestion from "./pages/Exam/Examstarted"
 import ExamResult from "./pages/Exam/ExamResult"
+import Contribution from "./pages/Contribution/Contribution"
+import { Semester } from "./pages/Semester/Semester"
+import { ChapterLearning } from "./pages/Chapter/ChapterLearning"
 
 const queryClient = new QueryClient()
 
 function PublicRoute({ children }) {
   const token = Cookies.get("token")
   return token ? <Navigate to="/dashboard" /> : children
+}
+
+function ProtectedRoute({ children }) {
+  const token = Cookies.get("token")
+  return token ? children : <Navigate to="/login" />
 }
 
 const App = () => {
@@ -61,6 +69,24 @@ const App = () => {
               {layoutRoute({
                 path: "/courses",
                 component: <MyCourse />,
+                protected: true,
+              })}
+              {layoutRoute({
+                path: "/semester/:courseId/:semesterId",
+                component: <Semester />,
+                protected: true,
+              })}
+              <Route 
+                path="/chapter/:courseId/:semesterId/:chapterId" 
+                element={
+                  <ProtectedRoute>
+                    <ChapterLearning />
+                  </ProtectedRoute>
+                } 
+              />
+              {layoutRoute({
+                path: "/contribution",
+                component: <Contribution />,
                 protected: true,
               })}
               {layoutRoute({

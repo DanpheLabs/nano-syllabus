@@ -1,22 +1,23 @@
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  Play, 
-  BookOpen,
-  Clock,
-  Star,
-  TrendingUp,
-  Grid,
-  List
-} from "lucide-react"
+import {
+  Box,
+  Container,
+  Heading,
+  Text,
+  Button,
+  Card,
+  HStack,
+  VStack,
+  SimpleGrid,
+  Progress,
+  Tabs,
+  Icon,
+  Flex,
+  Dialog,
+  Portal,
+} from "@chakra-ui/react"
+import { FiPlay, FiBook, FiSettings } from "react-icons/fi"
+import { useNavigate } from "react-router-dom"
 import Cookies from "js-cookie"
 
 interface MyCoursesProps {
@@ -25,327 +26,380 @@ interface MyCoursesProps {
 }
 
 export function MyCourses({ onCourseSelect, onCreateCourse }: MyCoursesProps) {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [searchQuery, setSearchQuery] = useState("")
+  const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
+  const [currentSemesters, setCurrentSemesters] = useState<{
+    [courseId: string]: string
+  }>({
+    "1": "sem1", // Default current semester for course 1
+    "2": "sem1", // Default current semester for course 2
+  })
 
   const data = Cookies.get("token")
   console.log("data", data)
+
+  // Available semesters 1-8
+  const availableSemesters = Array.from({ length: 8 }, (_, i) => ({
+    id: `sem${i + 1}`,
+    name: `Semester ${i + 1}`,
+    number: i + 1,
+  }))
+
   const courses = [
     {
       id: "1",
-      title: "Data Structures & Algorithms",
-      subject: "Computer Science",
-      progress: 75,
-      totalTopics: 24,
-      completedTopics: 18,
-      lastAccessed: "2 hours ago",
-      difficulty: "Advanced",
-      rating: 4.8,
-      studyTime: "45h",
-      category: "Programming",
-      status: "In Progress",
+      title: "B.E Electronics and Communication",
+      department: "Engineering",
+      semesters: availableSemesters.map((sem, index) => ({
+        id: sem.id,
+        name: sem.name,
+        progress: index === 0 ? 20 : index === 1 ? 85 : index <= 3 ? 100 : 0,
+        topicsCompleted:
+          index === 0 ? 18 : index === 1 ? 95 : index <= 3 ? 100 : 0,
+        status: getCurrentStatus(sem.id, "1", index),
+      })),
     },
     {
       id: "2",
-      title: "Database Management Systems",
-      subject: "Computer Science",
-      progress: 45,
-      totalTopics: 16,
-      completedTopics: 7,
-      lastAccessed: "1 day ago",
-      difficulty: "Intermediate",
-      rating: 4.6,
-      studyTime: "32h",
-      category: "Database",
-      status: "In Progress",
-    },
-    {
-      id: "3",
-      title: "Machine Learning Fundamentals",
-      subject: "Computer Science",
-      progress: 100,
-      totalTopics: 20,
-      completedTopics: 20,
-      lastAccessed: "3 days ago",
-      difficulty: "Advanced",
-      rating: 4.9,
-      studyTime: "68h",
-      category: "AI/ML",
-      status: "Completed",
-    },
-    {
-      id: "4",
-      title: "Software Engineering Principles",
-      subject: "Computer Science",
-      progress: 20,
-      totalTopics: 18,
-      completedTopics: 4,
-      lastAccessed: "1 week ago",
-      difficulty: "Intermediate",
-      rating: 4.5,
-      studyTime: "12h",
-      category: "Engineering",
-      status: "In Progress",
+      title: "B.Tech Computer Science",
+      department: "Engineering",
+      semesters: availableSemesters.map((sem, index) => ({
+        id: sem.id,
+        name: sem.name,
+        progress: index === 0 ? 45 : index === 1 ? 30 : 0,
+        topicsCompleted: index === 0 ? 60 : index === 1 ? 40 : 0,
+        status: getCurrentStatus(sem.id, "2", index),
+      })),
     },
   ]
 
-  const filteredCourses = courses.filter(
-    (course) =>
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  function getCurrentStatus(semId: string, courseId: string, index: number) {
+    const currentSem = currentSemesters[courseId]
+    if (semId === currentSem) return "current"
 
-  const inProgressCourses = filteredCourses.filter(
-    (c) => c.status === "In Progress"
-  )
-  const completedCourses = filteredCourses.filter(
-    (c) => c.status === "Completed"
-  )
+    const currentSemNumber = parseInt(currentSem.replace("sem", ""))
+    const thisSemNumber = index + 1
 
-  const CourseCard = ({ course }: { course: (typeof courses)[0] }) => (
-    <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer group">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <Badge
-            variant={course.status === "Completed" ? "default" : "secondary"}
-            className={course.status === "Completed" ? "bg-success" : ""}
-          >
-            {course.category}
-          </Badge>
-          <Button variant="ghost" size="sm">
-            <MoreVertical className="w-4 h-4" />
-          </Button>
-        </div>
-        <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-        <p className="text-sm text-muted-foreground">{course.subject}</p>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div>
-            <div className="flex justify-between text-sm mb-2">
-              <span>Progress</span>
-              <span className="font-medium">{course.progress}%</span>
-            </div>
-            <Progress value={course.progress} className="h-2" />
-            <p className="text-xs text-muted-foreground mt-1">
-              {course.completedTopics} of {course.totalTopics} topics completed
-            </p>
-          </div>
+    if (thisSemNumber < currentSemNumber) return "completed"
+    return "not-started"
+  }
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {course.studyTime}
-            </div>
-            <div className="flex items-center gap-1">
-              <Star className="w-3 h-3" />
-              {course.rating}
-            </div>
-            <Badge variant="outline" className="text-xs">
-              {course.difficulty}
-            </Badge>
-          </div>
+  // Get tab counts
+  const getCurrentSemesters = () =>
+    courses.flatMap((course) =>
+      course.semesters.filter((sem) => sem.status === "current")
+    )
 
-          <div className="flex gap-2">
+  const getCompletedSemesters = () =>
+    courses.flatMap((course) =>
+      course.semesters.filter((sem) => sem.status === "completed")
+    )
+
+  const getAllSemesters = () => courses.flatMap((course) => course.semesters)
+
+  const currentSemestersList = getCurrentSemesters()
+  const completedSemestersList = getCompletedSemesters()
+  const allSemestersList = getAllSemesters()
+
+  // Handle semester selection
+  const handleSemesterCardClick = (courseId: string) => {
+    setSelectedCourse(courseId)
+    setIsModalOpen(true)
+  }
+
+  const handleSemesterSelect = (semesterId: string) => {
+    if (selectedCourse) {
+      setCurrentSemesters((prev) => ({
+        ...prev,
+        [selectedCourse]: semesterId,
+      }))
+    }
+    setIsModalOpen(false)
+    setSelectedCourse(null)
+  }
+
+  // Semester Card Component
+  const SemesterCard = ({
+    semester,
+    courseName,
+    courseId,
+  }: {
+    semester: any
+    courseName: string
+    courseId: string
+  }) => (
+    <Card.Root
+      maxW="400px"
+      bg="white"
+      borderColor="gray.200"
+      borderWidth="1px"
+      shadow="sm"
+      cursor="pointer"
+      _hover={{
+        shadow: "lg",
+        transform: "translateY(-2px)",
+        borderColor: "blue.400",
+      }}
+      transition="all 0.2s"
+    >
+      <Card.Header pb={3}>
+        <Heading size="lg" color="gray.800" mb={1}>
+          {courseName}
+        </Heading>
+      </Card.Header>
+
+      <Card.Body pt={0}>
+        <VStack align="stretch" gap={4}>
+          <Box>
+            <Heading size="md" color="gray.800" mb={2}>
+              {semester.name}
+            </Heading>
+
+            <Box mb={3}>
+              <HStack justify="space-between" mb={2}>
+                <Text fontSize="sm" color="gray.600">
+                  Progress
+                </Text>
+                <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                  {semester.progress}%
+                </Text>
+              </HStack>
+              <Progress.Root value={semester.progress} size="sm" bg="gray.200">
+                <Progress.Track bg="gray.200">
+                  <Progress.Range bg="blue.500" />
+                </Progress.Track>
+              </Progress.Root>
+              <Text fontSize="xs" color="gray.500" mt={1}>
+                {semester.topicsCompleted}% topics completed
+              </Text>
+            </Box>
+
             <Button
-              className="flex-1 gradient-primary text-white group-hover:shadow-medium"
-              onClick={() => onCourseSelect?.(course.id)}
+              w="full"
+              colorScheme="blue"
+              size="md"
+              bg="blue.500"
+              _hover={{ bg: "blue.600" }}
+              onClick={() => {
+                // Navigate to semester page
+                navigate(`/semester/${courseId}/${semester.id}`)
+                // Also call the callback if provided
+                onCourseSelect?.(semester.id)
+              }}
             >
-              <Play className="w-4 h-4 mr-2" />
+              <Icon as={FiPlay} mr={2} />
               Continue
             </Button>
-            <Button variant="outline" size="sm">
-              <BookOpen className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            Last accessed: {course.lastAccessed}
-          </p>
-        </div>
-      </CardContent>
-    </Card>
-  )
-
-  const CourseListItem = ({ course }: { course: (typeof courses)[0] }) => (
-    <Card className="shadow-soft hover:shadow-medium transition-all cursor-pointer">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 gradient-primary rounded-lg flex items-center justify-center flex-shrink-0">
-            <BookOpen className="w-6 h-6 text-white" />
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between mb-1">
-              <h3 className="font-semibold truncate">{course.title}</h3>
-              <Badge
-                variant={
-                  course.status === "Completed" ? "default" : "secondary"
-                }
-                className={course.status === "Completed" ? "bg-success" : ""}
-              >
-                {course.category}
-              </Badge>
-            </div>
-            <p className="text-sm text-muted-foreground mb-2">
-              {course.subject}
-            </p>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span>
-                {course.completedTopics}/{course.totalTopics} topics
-              </span>
-              <span>{course.studyTime}</span>
-              <span>★ {course.rating}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
-            <div className="text-right">
-              <p className="text-sm font-medium">{course.progress}%</p>
-              <Progress value={course.progress} className="w-20 h-1" />
-            </div>
-            <Button
-              size="sm"
-              className="gradient-primary text-white"
-              onClick={() => onCourseSelect?.(course.id)}
-            >
-              Continue
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+          </Box>
+        </VStack>
+      </Card.Body>
+    </Card.Root>
   )
 
   return (
-    <div className="flex-1 p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">My Courses</h1>
-          <p className="text-muted-foreground">Manage your learning journey</p>
-        </div>
-        <Button
-          onClick={onCreateCourse}
-          className="gradient-primary text-white"
-        >
-          Create New Course
-        </Button>
-      </div>
+    <Box bg="white" minH="100vh" color="gray.800">
+      <Container maxW="6xl" py={6}>
+        <VStack gap={6} align="stretch">
+          {/* Header */}
+          <Flex align="center" justify="space-between">
+            <Box>
+              <Heading size="xl" color="gray.800" mb={1}>
+                My Courses
+              </Heading>
+              <Text color="gray.600" fontSize="md">
+                Manage your learning journey
+              </Text>
+            </Box>
+            <Button
+              colorScheme="blue"
+              bg="blue.500"
+              _hover={{ bg: "blue.600" }}
+              onClick={() => {
+                // Show dialog for first course by default, or could be enhanced to select course first
+                setSelectedCourse("1")
+                setIsModalOpen(true)
+              }}
+              px={4}
+            >
+              <Icon as={FiSettings} mr={2} />
+              Set Current Semester
+            </Button>
+          </Flex>
 
-      {/* Search and Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search courses..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Button variant="outline">
-          <Filter className="w-4 h-4 mr-2" />
-          Filter
-        </Button>
-        <div className="flex border border-border rounded-lg p-1">
-          <Button
-            variant={viewMode === "grid" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("grid")}
+          {/* Course Tabs */}
+          <Tabs.Root
+            defaultValue="current"
+            variant="enclosed"
+            colorScheme="blue"
           >
-            <Grid className="w-4 h-4" />
-          </Button>
-          <Button
-            variant={viewMode === "list" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("list")}
-          >
-            <List className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+            <Tabs.List bg="gray.100" borderColor="gray.300" gap={2}>
+              <Tabs.Trigger
+                value="current"
+                color="gray.600"
+                _selected={{ color: "blue.600", bg: "white", borderColor: "blue.500" }}
+                fontSize="sm"
+                px={4}
+                py={2}
+              >
+                Current ({currentSemestersList.length})
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="completed"
+                color="gray.600"
+                _selected={{ color: "blue.600", bg: "white", borderColor: "blue.500" }}
+                fontSize="sm"
+                px={4}
+                py={2}
+              >
+                Completed ({completedSemestersList.length})
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="all"
+                color="gray.600"
+                _selected={{ color: "blue.600", bg: "white", borderColor: "blue.500" }}
+                fontSize="sm"
+                px={4}
+                py={2}
+              >
+                All ({allSemestersList.length})
+              </Tabs.Trigger>
+            </Tabs.List>
 
-      {/* Course Tabs */}
-      <Tabs defaultValue="in-progress" className="w-full">
-        <TabsList>
-          <TabsTrigger value="in-progress">
-            In Progress ({inProgressCourses.length})
-          </TabsTrigger>
-          <TabsTrigger value="completed">
-            Completed ({completedCourses.length})
-          </TabsTrigger>
-          <TabsTrigger value="all">
-            All Courses ({filteredCourses.length})
-          </TabsTrigger>
-        </TabsList>
+            <Tabs.Content value="current" px={0} py={4}>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                {courses.map((course) =>
+                  course.semesters
+                    .filter((sem) => sem.status === "current")
+                    .map((semester) => (
+                      <SemesterCard
+                        key={`${course.id}-${semester.id}`}
+                        semester={semester}
+                        courseName={course.title}
+                        courseId={course.id}
+                      />
+                    ))
+                )}
+              </SimpleGrid>
+            </Tabs.Content>
 
-        <TabsContent value="in-progress" className="mt-6">
-          {viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {inProgressCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {inProgressCourses.map((course) => (
-                <CourseListItem key={course.id} course={course} />
-              ))}
-            </div>
+            <Tabs.Content value="completed" px={0} py={4}>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                {courses.map((course) =>
+                  course.semesters
+                    .filter((sem) => sem.status === "completed")
+                    .map((semester) => (
+                      <SemesterCard
+                        key={`${course.id}-${semester.id}`}
+                        semester={semester}
+                        courseName={course.title}
+                        courseId={course.id}
+                      />
+                    ))
+                )}
+              </SimpleGrid>
+            </Tabs.Content>
+
+            <Tabs.Content value="all" px={0} py={4}>
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                {courses.map((course) =>
+                  course.semesters.map((semester) => (
+                    <SemesterCard
+                      courseId="1"
+                      key={`${course.id}-${semester.id}`}
+                      semester={semester}
+                      courseName={course.title}
+                    />
+                  ))
+                )}
+              </SimpleGrid>
+            </Tabs.Content>
+          </Tabs.Root>
+
+          {/* Empty State */}
+          {courses.length === 0 && (
+            <VStack py={12} gap={4}>
+              <Icon as={FiBook} boxSize={16} color="gray.500" />
+              <Heading size="md" color="white">
+                No courses found
+              </Heading>
+              <Text color="gray.400" textAlign="center">
+                Start your learning journey by enrolling in your first course
+              </Text>
+              <Button
+                onClick={onCreateCourse}
+                colorScheme="blue"
+                bg="blue.500"
+                _hover={{ bg: "blue.600" }}
+              >
+                Explore Courses
+              </Button>
+            </VStack>
           )}
-        </TabsContent>
+        </VStack>
+      </Container>
 
-        <TabsContent value="completed" className="mt-6">
-          {viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {completedCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {completedCourses.map((course) => (
-                <CourseListItem key={course.id} course={course} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
+      {/* Semester Selection Dialog */}
+      <Dialog.Root
+        open={isModalOpen}
+        onOpenChange={({ open }) => setIsModalOpen(open)}
+      >
+        <Portal>
+          <Dialog.Backdrop />
+          <Dialog.Positioner>
+            <Dialog.Content
+              bg="gray.800"
+              borderColor="gray.600"
+              borderWidth="1px"
+              maxW="md"
+              borderRadius="md"
+            >
+              <Dialog.Header>
+                <Dialog.Title color="white" fontSize="lg">
+                  Select Current Semester
+                </Dialog.Title>
+                <Dialog.CloseTrigger
+                  color="gray.400"
+                  _hover={{ color: "white" }}
+                />
+              </Dialog.Header>
 
-        <TabsContent value="all" className="mt-6">
-          {viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredCourses.map((course) => (
-                <CourseListItem key={course.id} course={course} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+              <Dialog.Body py={4}>
+                <VStack gap={3} align="stretch">
+                  <Text color="gray.300" fontSize="sm" mb={2}>
+                    Choose which semester you want to set as current:
+                  </Text>
 
-      {filteredCourses.length === 0 && (
-        <div className="text-center py-12">
-          <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No courses found</h3>
-          <p className="text-muted-foreground mb-4">
-            {searchQuery
-              ? "Try adjusting your search terms"
-              : "Start your learning journey by creating your first course"}
-          </p>
-          <Button
-            onClick={onCreateCourse}
-            className="gradient-primary text-white"
-          >
-            Create Your First Course
-          </Button>
-        </div>
-      )}
-    </div>
+                  <SimpleGrid columns={2} gap={3}>
+                    {availableSemesters.map((sem) => (
+                      <Button
+                        key={sem.id}
+                        variant="outline"
+                        borderColor="gray.600"
+                        color="white"
+                        _hover={{
+                          borderColor: "blue.400",
+                          bg: "blue.500",
+                          color: "white",
+                        }}
+                        onClick={() => handleSemesterSelect(sem.id)}
+                        bg={
+                          selectedCourse &&
+                          currentSemesters[selectedCourse] === sem.id
+                            ? "blue.500"
+                            : "transparent"
+                        }
+                      >
+                        {sem.name}
+                      </Button>
+                    ))}
+                  </SimpleGrid>
+                </VStack>
+              </Dialog.Body>
+            </Dialog.Content>
+          </Dialog.Positioner>
+        </Portal>
+      </Dialog.Root>
+    </Box>
   )
 }

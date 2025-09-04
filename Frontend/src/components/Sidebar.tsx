@@ -53,6 +53,12 @@ const navItems = [
   { id: "create", label: "Create Course", icon: Plus, href: "/create" },
   { id: "exam", label: "My Exam", icon: BarChart3, href: "/exam" },
   {
+    id: "contribution",
+    label: " Contribution",
+    icon: BarChart3,
+    href: "/contribution",
+  },
+  {
     id: "leaderboard",
     label: "Leaderboard",
     icon: Trophy,
